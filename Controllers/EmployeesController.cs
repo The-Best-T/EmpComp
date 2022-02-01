@@ -39,8 +39,8 @@ namespace EmpComp.Controllers
             });
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<GetOneEmployeeResponse>> Get(int id)
+        [HttpGet("{id:Guid}")]
+        public async Task<ActionResult<GetOneEmployeeResponse>> Get(Guid id)
         {
             var employee = await _mainRepository.EmployeeRepository
                                                 .Find(e => e.Id == id).FirstOrDefaultAsync();
@@ -117,8 +117,8 @@ namespace EmpComp.Controllers
             });
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
+        [HttpDelete("{id:Guid}")]
+        public async Task<ActionResult> Delete(Guid id)
         {
             var employee = _mainRepository.EmployeeRepository.Find(e => e.Id == id)
                                                              .FirstOrDefault();
