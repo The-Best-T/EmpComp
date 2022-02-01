@@ -66,7 +66,7 @@ namespace EmpComp.Controllers
                                               && e.Patronymic == request.Patronymic && e.Age == request.Age).FirstOrDefaultAsync();
             if (employee != null) return Problem("Employee with this data already exists.");
 
-            Employee createdEmployee = new Employee
+            Employee createdEmployee = new()
             {
                 Name = request.Name,
                 SurName = request.SurName,
@@ -90,7 +90,7 @@ namespace EmpComp.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<UpdateEmployeeResponse>> Put([FromBody] UpdateEmployeeRequest request)
+        public async Task<ActionResult<UpdateEmployeeResponse>> Update([FromBody] UpdateEmployeeRequest request)
         {
             var employee = await _mainRepository.EmployeeRepository.Find(e => e.Id == request.Id).FirstOrDefaultAsync();
             if (employee == null) 
