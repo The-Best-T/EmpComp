@@ -39,8 +39,8 @@ namespace EmpComp.Controllers
             });
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<ActionResult<GetOneEmployeeResponse>> Get(Guid id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<GetOneEmployeeResponse>> Get(int id)
         {
             var employee = await _mainRepository.EmployeeRepository
                                                 .Find(e => e.Id == id).FirstOrDefaultAsync();
@@ -61,9 +61,9 @@ namespace EmpComp.Controllers
         [HttpPost]
         public async Task<ActionResult<CreateEmployeeResponse>> Create([FromBody] CreateEmployeeRequest request)
         {
-            var employee = _mainRepository.EmployeeRepository
+            var employee = await _mainRepository.EmployeeRepository
                                         .Find(e => e.Name == request.Name && e.SurName == request.SurName
-                                              && e.Patronymic == request.Patronymic && e.Age == request.Age);
+                                              && e.Patronymic == request.Patronymic && e.Age == request.Age).FirstOrDefaultAsync();
             if (employee != null) return Problem("Employee with this data already exists.");
 
             Employee createdEmployee = new Employee
@@ -89,7 +89,7 @@ namespace EmpComp.Controllers
             });
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<ActionResult<UpdateEmployeeResponse>> Put([FromBody] UpdateEmployeeRequest request)
         {
             var employee = await _mainRepository.EmployeeRepository.Find(e => e.Id == request.Id).FirstOrDefaultAsync();
@@ -117,8 +117,8 @@ namespace EmpComp.Controllers
             });
         }
 
-        [HttpDelete("{id:guid}")]
-        public async Task<ActionResult> Delete(Guid id)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
         {
             var employee = _mainRepository.EmployeeRepository.Find(e => e.Id == id)
                                                              .FirstOrDefault();
