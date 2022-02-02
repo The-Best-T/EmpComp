@@ -14,9 +14,9 @@ namespace EmpComp.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Employee>().HasData(
-                    new Employee {Name = "Tom",SurName="Averen",Patronymic="Hugon",Age=28},
-                    new Employee {Name = "Alice",SurName="Marol",Patronymic="Markes", Age = 26 },
-                    new Employee {Name = "Sam",SurName="Rafian",Patronymic="Jameson",Age = 28 }
+                    new Employee {Id=Guid.NewGuid(),Name = "Tom",SurName="Averen",Patronymic="Hugon",Age=28},
+                    new Employee {Id=Guid.NewGuid(),Name = "Alice",SurName="Marol",Patronymic="Markes", Age = 26 },
+                    new Employee {Id=Guid.NewGuid(),Name = "Sam",SurName="Rafian",Patronymic="Jameson",Age = 28 }
             );
         }
     }
