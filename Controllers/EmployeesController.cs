@@ -20,7 +20,7 @@ namespace EmpComp.Controllers
         {
             var employees = await _mainRepository.EmployeeRepository.GetAll().ToListAsync();
             if (employees == null || employees.Count==0)
-                return NotFound("There is no employees.");
+                return NotFound("There are no employees.");
 
             var employeesResponse = new List<GetOneEmployeeResponse>();
             foreach (var employee in employees)
@@ -29,8 +29,9 @@ namespace EmpComp.Controllers
                     Id = employee.Id,
                     Name = employee.Name,
                     SurName = employee.SurName,
-                    Patronymic=employee.Patronymic,
-                    Age = employee.Age
+                    Age = employee.Age,
+                    CompanyId = employee.CompanyId,
+                    CompanyName=employee.Company?.Name
                 });
 
             return Ok(new GetAllEmployeesResponse
@@ -52,8 +53,9 @@ namespace EmpComp.Controllers
                 Id = employee.Id,
                 Name = employee.Name,
                 SurName = employee.SurName,
-                Patronymic = employee.Patronymic,
-                Age = employee.Age
+                Age = employee.Age,
+                CompanyId=employee.CompanyId,
+                CompanyName = employee.Company?.Name
             });
 
         }
@@ -63,15 +65,16 @@ namespace EmpComp.Controllers
         {
             var employee = await _mainRepository.EmployeeRepository
                                         .Find(e => e.Name == request.Name && e.SurName == request.SurName
-                                              && e.Patronymic == request.Patronymic && e.Age == request.Age).FirstOrDefaultAsync();
+                                                && e.Age == request.Age).FirstOrDefaultAsync();
             if (employee != null) return Problem("Employee with this data already exists.");
-
+            Company? company = await _mainRepository.CompanyRepository
+                                                   .Find(c => c.Id == request.CompanyId).FirstOrDefaultAsync();
             Employee createdEmployee = new()
             {
                 Name = request.Name,
                 SurName = request.SurName,
-                Patronymic = request.Patronymic,
-                Age = request.Age
+                Age = request.Age,
+                Company = company
             };
             await _mainRepository.EmployeeRepository.CreateAsync(createdEmployee);
             await _mainRepository.SaveChangesAsync();
@@ -83,8 +86,9 @@ namespace EmpComp.Controllers
                     Id=createdEmployee.Id,
                     Name = createdEmployee.Name,
                     SurName= createdEmployee.SurName,
-                    Patronymic= createdEmployee.Patronymic,
-                    Age=createdEmployee.Age
+                    Age=createdEmployee.Age,
+                    CompanyId = company?.Id,
+                    CompanyName= company?.Name
                 }
             });
         }
@@ -93,13 +97,17 @@ namespace EmpComp.Controllers
         public async Task<ActionResult<UpdateEmployeeResponse>> Update([FromBody] UpdateEmployeeRequest request)
         {
             var employee = await _mainRepository.EmployeeRepository.Find(e => e.Id == request.Id).FirstOrDefaultAsync();
-            if (employee == null) 
+            if (employee == null)
                 return Problem($"Employee with {request.Id} id does not exist.");
 
-            employee.Name=request.Name;
-            employee.SurName=request.SurName;
-            employee.Patronymic=request.Patronymic;
-            employee.Age=request.Age;
+            Company? company = await _mainRepository.CompanyRepository
+                                                   .Find(c => c.Id == request.CompanyId).FirstOrDefaultAsync();
+
+            employee.Name = request.Name;
+            employee.SurName = request.SurName;
+            employee.Age = request.Age;
+            employee.Company = company;
+            
 
             await _mainRepository.EmployeeRepository.UpdateAsync(employee);
             await _mainRepository.SaveChangesAsync();
@@ -111,8 +119,9 @@ namespace EmpComp.Controllers
                     Id=employee.Id,
                     Name=employee.Name,
                     SurName=employee.SurName,
-                    Patronymic=employee.Patronymic,
-                    Age=employee.Age
+                    Age=employee.Age,
+                    CompanyId=company?.Id,
+                    CompanyName = company?.Name
                 }
             });
         }
@@ -122,7 +131,7 @@ namespace EmpComp.Controllers
         {
             var employee = _mainRepository.EmployeeRepository.Find(e => e.Id == id)
                                                              .FirstOrDefault();
-            if (employee==null) return NotFound($"Employee with {id} id not found");
+            if (employee==null) return NotFound($"Employee with {id} id not found.");
 
             await _mainRepository.EmployeeRepository.DeleteAsync(employee);
             await _mainRepository.SaveChangesAsync();

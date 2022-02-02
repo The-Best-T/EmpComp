@@ -5,7 +5,7 @@ namespace EmpComp.ReqRes.EmployeesService.Request
     {
         [Required] public string Name { get; set; }
         [Required] public string SurName { get; set; }
-        [Required] public string Patronymic { get; set; }
         [Required] public int Age { get; set; }
+        public Guid? CompanyId { get; set; }
     }
 }
