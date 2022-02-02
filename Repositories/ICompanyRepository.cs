@@ -1,8 +1,7 @@
 ﻿using EmpComp.Repositories.Base;
-
 namespace EmpComp.Repositories
 {
-    public interface IEmployeeRepository : IRepositoryBase<Employee>
+    public interface ICompanyRepository : IRepositoryBase<Company>
     {
     }
 }

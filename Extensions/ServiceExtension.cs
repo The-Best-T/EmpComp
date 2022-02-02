@@ -10,6 +10,7 @@ namespace EmpComp.Extensions
         }
         public static void AddRepositories(this IServiceCollection services)
         {
+            services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IMainRepository,MainRepository>();
         }
